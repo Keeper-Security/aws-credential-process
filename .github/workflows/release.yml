@@ -1,0 +1,95 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    env:
+      ARCHES: amd64 arm64
+      COMMANDS: aws-credential-process
+      OSES: darwin linux windows
+    environment: release
+    runs-on: macos-latest
+    steps:
+      - uses: apple-actions/import-codesign-certs@v2
+        with:
+          create-keychain: true
+          keychain: codesign
+          p12-file-base64: ${{ secrets.CODESIGN_CERT_P12 }}
+          p12-password: ${{ secrets.CODESIGN_CERT_P12_PWD }}
+
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          fingerprint: "${{ secrets.GPG_FINGERPRINT }}"
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v4
+        with:
+          go-version-file: "go.mod"
+
+      - run: go test -v ./...
+
+      - name: Build Linux, MacOS and Windows binaries
+        run: |
+          for arch in $ARCHES; do
+            for os in $OSES; do
+              for command in $COMMANDS; do
+                bin="keeper-${command}-${{ github.ref_name }}_${os}_${arch}";
+                test "${os}" = 'windows' && bin="${bin}.exe";
+                GOOS=$os GOARCH=$arch go build -v -o "${bin}" ./cmd/$command;
+              done;
+            done;
+          done
+
+      - name: Sign and notarize MacOS binaries
+        run: |
+          for arch in $ARCHES; do
+            for command in $COMMANDS; do
+              bin="keeper-${command}-${{ github.ref_name }}_darwin_${arch}";
+              codesign --sign 85778X8X36 --options runtime --timestamp "${bin}";
+              zip="${bin}.zip";
+              zip "${zip}" "${bin}";
+              rm -f "${bin}";
+              xcrun notarytool submit "${zip}" \
+              --apple-id 'ksserviceaccount@keepersecurity.com' \
+              --team-id 234QNB7GCA \
+              --password '${{ secrets.APP_SPECIFIC_PASSWORD }}' \
+              --wait;
+            done;
+          done
+
+      - name: Create checksums
+        run: shasum -a 256 *-${{ github.ref_name }}_*_*  >| checksums.txt
+
+      - name: Sign checksums
+        run: |
+          gpg --batch --yes --detach-sign --armor \
+            --local-user "${{ secrets.GPG_FINGERPRINT }}" \
+            --passphrase "${{ secrets.GPG_PASSPHRASE }}" \
+            --output checksums.txt.sig checksums.txt
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "${{ github.ref_name }}" \
+            --repo "${{ github.repository }}"
+
+      - name: Upload artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ github.ref_name }}" \
+            --repo "${{ github.repository }}" \
+            *-${{ github.ref_name }}_*_* \
+            checksums.txt checksums.txt.sig
