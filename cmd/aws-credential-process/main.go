@@ -14,7 +14,7 @@ func main() {
 		This is the entry point for the AWS CLI Credential Process. It is 
 		invoked by the AWS CLI with the following config in ~/.aws/config:
 
-			credential_process = path/to/aws-auth --uid <UID>
+		credential_process = path/to/keeper-aws-credential-process --uid <UID>
 
 		The AWS CLI will call this executable with passed arguments. It 
 		credential process expects the UID of the credential to be fetched from
