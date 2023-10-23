@@ -26,7 +26,7 @@ What you name this custom record type is up to you. However, this credential pro
 
 > Note: Field names are case sensitive. 
 
-#TODO: Add image
+![Custom Record of Access Key](assets/custom-record.png)
 
 Once you have created your custom field, you can now use it to create a record for your AWS Access Key. This record should be stored in a shared folder that your KSM application has permission to access.
 
