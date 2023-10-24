@@ -1,3 +1,7 @@
+![GitHub](https://img.shields.io/github/license/Keeper-Security/aws-credential-process)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/Keeper-Security/aws-credential-process/test.yml)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/Keeper-Security/aws-credential-process)
+
 # Keeper AWS CLI Credential Process
 
 By default, the AWS CLI uses credentials stored in plaintext in `~/.aws/credentials`. With this credential process, you can now use the Keeper Vault to store your AWS credentials, removing the need to have them on disk on the endpoint.
