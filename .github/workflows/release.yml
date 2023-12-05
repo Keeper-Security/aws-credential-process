@@ -72,6 +72,7 @@ jobs:
 
       - name: Sign checksums
         run: |
+          export GPG_TTY=$(tty)
           gpg --batch --yes --detach-sign --armor \
             --local-user "${{ secrets.GPG_FINGERPRINT }}" \
             --passphrase "${{ secrets.GPG_PASSPHRASE }}" \
