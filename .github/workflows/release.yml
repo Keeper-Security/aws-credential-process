@@ -69,8 +69,8 @@ jobs:
 
       - name: Create checksums
         run: |
-          shasum -a 256 *-${{ github.ref_name }}_*_*  >| checksums.txt
-          file -v *-${{ github.ref_name }}_*_*
+          shasum -a 256 *-${{ github.ref_name }}_*_* >| checksums.txt
+          file *-${{ github.ref_name }}_*_*
 
       - name: Sign checksums
         run: |
