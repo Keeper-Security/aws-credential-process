@@ -74,11 +74,11 @@ jobs:
 
       - name: Sign checksums
         run: |
-          gpg -vvv --batch --yes --detach-sign --armor checksums.txt \
+          GPG_TTY=$(tty) gpg -vvv --batch --yes --detach-sign --armor \
             --local-user "${{ secrets.GPG_FINGERPRINT }}" \
             --output checksums.txt.sig \
             --passphrase "${{ secrets.GPG_PASSPHRASE }}" \
-            --pinentry-mode loopback
+            --pinentry-mode loopback checksums.txt
 
       - name: Create release
         env:
