@@ -38,9 +38,9 @@ Once safely stored, you are now able to delete the Access Key from your AWS cred
 
 ### KSM
 
-The integration expects a KSM Application Configuration file at either `.config/keeper/aws-credential-process.json` or `aws-credential-process.json` relative to the user's home directory. It must have access to a Shared Folder that contains the AWS Access key required.
+The integration expects a KSM Application Configuration file at either `.config/keeper/aws-credential-process.json` or `aws-credential-process.json` relative to the user's home directory. It must have access to a Shared Folder that contains the AWS Access key required. For help in obtaining a KSM configuration in JSON format, [follow these instructions](https://docs.keeper.io/secrets-manager/secrets-manager/about/secrets-manager-configuration#creating-a-secrets-manager-configuration).
 
-> For help setting up the KSM and obtaining a config file, head to the [official docs](https://docs.keeper.io/secrets-manager/secrets-manager/quick-start-guide)
+> For help setting up the KSM and creating an application, head to the [official docs](https://docs.keeper.io/secrets-manager/secrets-manager/quick-start-guide).
 
 ### AWS Config
 
