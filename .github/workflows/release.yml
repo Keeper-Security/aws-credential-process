@@ -68,12 +68,13 @@ jobs:
           done
 
       - name: Create checksums
-        run: shasum -a 256 *-${{ github.ref_name }}_*_*  >| checksums.txt
+        run: |
+          shasum -a 256 *-${{ github.ref_name }}_*_*  >| checksums.txt
+          file -v *-${{ github.ref_name }}_*_*
 
       - name: Sign checksums
         run: |
-          export GPG_TTY=$(tty)
-          gpg --batch --yes --detach-sign --armor \
+          gpg -vvv --batch --yes --detach-sign --armor \
             --local-user "${{ secrets.GPG_FINGERPRINT }}" \
             --passphrase "${{ secrets.GPG_PASSPHRASE }}" \
             --output checksums.txt.sig checksums.txt
