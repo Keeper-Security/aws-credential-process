@@ -64,6 +64,8 @@ If the command completes without error, congratulations, you are now fully set u
 
 ## Contributing
 
+Please read and refer to the [contribution guide](https://github.com/Keeper-Security/aws-credential-process/blob/main/CONTRIBUTING.md) before making your first PR.
+
 This module uses the built-in Golang tooling for building and testing:
 
 ```shell
