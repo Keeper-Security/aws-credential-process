@@ -17,7 +17,7 @@ jobs:
     environment: release
     runs-on: macos-latest
     steps:
-      - uses: apple-actions/import-codesign-certs@v3
+      - uses: apple-actions/import-codesign-certs@v5
         with:
           create-keychain: true
           keychain: codesign
